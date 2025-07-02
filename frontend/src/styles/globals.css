@@ -1,0 +1,134 @@
+/* src/styles/globals.css */
+
+/* 1. Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap");
+
+/* 2. Tailwind Core */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. Variables y estilos globales */
+:root {
+  --hex-size: 90px;
+  --hex-gap: 2px;
+  --hex-col: #06B6D4;
+  --hex-bg: #0f172a;
+  --hex-blur: 8px;
+  --hex-alpha: .12;
+  --hex-speed: 60s;
+  --btn-grad-from: #0fbcf9;
+  --btn-grad-to: #00d8ff;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  scroll-behavior: smooth;
+  font-family: "Inter", sans-serif;
+  background: var(--hex-bg);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Canvas fijo detrás */
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Patrón hexagonal animado */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: var(--hex-bg);
+  background-image:
+    repeating-linear-gradient(60deg, transparent 0 calc(var(--hex-gap)), var(--hex-col) 0 calc(var(--hex-size))),
+    repeating-linear-gradient(-60deg, transparent 0 calc(var(--hex-gap)), var(--hex-col) 0 calc(var(--hex-size))),
+    repeating-linear-gradient(0deg, transparent 0 calc(var(--hex-gap)), var(--hex-col) 0 calc(var(--hex-size)));
+  background-size: var(--hex-size) calc(var(--hex-size) * 1.732);
+  background-position: 0 0, 0 0, 0 calc(var(--hex-size)/2);
+  opacity: var(--hex-alpha);
+  filter: drop-shadow(0 0 var(--hex-blur) var(--hex-col));
+  mix-blend-mode: screen;
+  animation: hexScroll var(--hex-speed) linear infinite;
+}
+@keyframes hexScroll {
+  to {
+    background-position:
+      var(--hex-size) calc(var(--hex-size)*1.732),
+      calc(var(--hex-size)*-1) calc(var(--hex-size)*-1.732),
+      0 calc(var(--hex-size)/2 + var(--hex-size)*1.732);
+  }
+}
+
+/* Estilos de los enlaces de navegación */
+.nav-link {
+  position: relative;
+  padding-bottom: .25rem;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -2px;
+  height: 3px; width: 0;
+  background: var(--btn-grad-from);
+  transition: width .3s;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Tarjetas de características */
+.card {
+  background: rgba(15,23,42,0.4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, var(--btn-grad-from)/20, var(--btn-grad-to)/20);
+}
+
+/* ------------------------------------------------------------
+   3D wheel styles para HowItWorks
+------------------------------------------------------------ */
+.how-wheel {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.wheel-item {
+  --angle: calc(var(--i) * 90deg);
+  position: absolute;
+  top: 50%; left: 50%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform:
+    translate(-50%, -50%)
+    rotateY(var(--angle))
+    translateZ(250px);
+}
+.item-content {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* efecto 3D sobre los iconos planos */
+.icon {
+  transform: rotateX(15deg);
+  filter: drop-shadow(0 8px 6px rgba(0,0,0,0.5));
+  will-change: transform;
+}
