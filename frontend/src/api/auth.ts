@@ -1,33 +1,32 @@
 // src/api/auth.ts
 
+import { apiFetch, setAccessToken, getAccessToken } from './http'
+
 interface TokenPair {
   access: string
   refresh: string
 }
 
-export async function login(username: string, password: string): Promise<void> {
-  const res = await fetch(`/api/token/`, {
+/** Requests JWT & saves it in memmory */
+export async function login(username: string, password: string) {
+  const res = await apiFetch('/api/token/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password })
   })
-  if (!res.ok) {
-    const err = await res.json().catch(() => null)
-    console.error('Login fallido:', res.status, err)
-    throw new Error('Usuario o contraseña inválidos')
-  }
+  if (!res.ok) throw new Error('Invalid credentials')
   const data = (await res.json()) as TokenPair
-  localStorage.setItem('token', data.access)
-  // AVISA al resto de la app que ha cambiado el estado de autenticación
-  window.dispatchEvent(new CustomEvent('authChanged'))
+  setAccessToken(data.access)
 }
 
-export function getToken(): string | null {
-  return localStorage.getItem('token')
+/** Deletes token in memmory & revokes refresh-token backend */
+export function logout() {
+  fetch('/api/logout/', { method: 'POST', credentials: 'include' })
+    .catch(() => null)
+  setAccessToken(null)
 }
 
-export function logout(): void {
-  localStorage.removeItem('token')
-  // AVISA al resto de la app que ha cambiado el estado de autenticación
-  window.dispatchEvent(new CustomEvent('authChanged'))
+/** Returns active/actual access-token (or null if no session found) */
+export function getToken() {
+  return getAccessToken()
 }

@@ -24,11 +24,6 @@ uploads/
 # Staticfiles
 staticfiles/
 
-# Migrations (¡ocho si quieres versionarlas, pero normalmente conviene mantenerlas en repo!)
-# **Ignora esta sección si prefieres mantener las migraciones en Git.**
-# **/migrations/*.py
-# **/migrations/*.pyc
-
 # IDEs
 .idea/
 .vscode/

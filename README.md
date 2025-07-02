@@ -1,1 +1,1 @@
-# Tailwind React Project
+# Tailwind Dajngo Project

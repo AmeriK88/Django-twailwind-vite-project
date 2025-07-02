@@ -1,5 +1,5 @@
 // src/api/templates.ts
-import { getToken } from './auth'
+import { apiFetch } from './http'   //  ← helper centralizado
 
 export interface Template {
   id: number
@@ -9,27 +9,29 @@ export interface Template {
   download_url: string
 }
 
-const API_BASE = 'http://127.0.0.1:8000'
-
+/** Lista de plantillas */
 export async function fetchTemplates(): Promise<Template[]> {
-  const res = await fetch(`${API_BASE}/api/plantillas/`)
+  const res = await apiFetch('/api/plantillas/')
   if (!res.ok) throw new Error('Error al obtener plantillas')
   return res.json()
 }
 
-// opcional: función para descargar vía fetch si necesitas control
+/** Descarga el ZIP de una plantilla protegida */
 export async function downloadTemplate(url: string): Promise<void> {
-  const token = getToken()
-  if (!token) throw new Error('No autorizado')
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-  if (!res.ok) throw new Error('Error al descargar')
+  // «url» ya es algo como "/api/plantillas/3/download/"
+  const res = await apiFetch(url)
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('Debes iniciar sesión')
+    throw new Error('Error al descargar')
+  }
+
   const blob = await res.blob()
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = url.split('/').pop()!
-  document.body.appendChild(a)
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(blob),
+    download: url.split('/').pop() || 'plantilla.zip'
+  })
+  document.body.append(a)
   a.click()
   a.remove()
+  URL.revokeObjectURL(a.href)
 }
