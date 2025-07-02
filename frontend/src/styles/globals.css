@@ -109,6 +109,7 @@ body::before {
   perspective: 1000px;
   transform-style: preserve-3d;
   will-change: transform;
+  pointer-events: none;
 }
 .wheel-item {
   --angle: calc(var(--i) * 90deg);
@@ -116,14 +117,17 @@ body::before {
   top: 50%; left: 50%;
   transform-style: preserve-3d;
   will-change: transform;
+  pointer-events: auto;
   transform:
     translate(-50%, -50%)
     rotateY(var(--angle))
     translateZ(250px);
+
 }
 .item-content {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  pointer-events: auto;
 }
 
 /* efecto 3D sobre los iconos planos */

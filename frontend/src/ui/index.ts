@@ -118,7 +118,7 @@ export function initUI() {
       trigger: '#how-it-works',
       start: () => `top ${navHeight}px`,
       end:   () => `+=${sectionHeight * 1.5}`,  // 1.5× la altura
-      scrub: 0.3,            // seguimiento algo más ágil
+      scrub: 0.5,            // seguimiento algo más ágil
       pin: true,             // fija la sección
       pinSpacing: true,      // crea el padding para no solapar
       anticipatePin: 1,
